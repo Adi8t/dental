@@ -35,7 +35,7 @@ jobs:
 
     - name: Run Tests
       env:
-        DJANGO_SETTINGS_MODULE: dental_management.settings  # Update this to match your settings file
+        DJANGO_SETTINGS_MODULE: dental_management.settings  
       run: |
         python manage.py test
 
