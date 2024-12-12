@@ -1,0 +1,44 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Set up the database
+      run: |
+        python manage.py makemigrations
+        python manage.py migrate
+
+    - name: Run Tests
+      env:
+        DJANGO_SETTINGS_MODULE: dental_management.settings  # Update this to match your settings file
+      run: |
+        python manage.py test
+
+    - name: Check installed packages (Debugging)
+      if: failure()
+      run: pip list
